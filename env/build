@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cd ../src
+make qt
+mv qt ../env/bin
+mv qt.cm* ../env/bin
+mv qt.o ../env/bin

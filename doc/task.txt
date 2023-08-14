@@ -1,0 +1,4 @@
+1:push quicktask to github
+2:work on chess clone with stockfish api
+3:comp 302 lecture 9 exercises
+4:work on ocaml 99 exercises
