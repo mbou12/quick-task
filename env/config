@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# PROBLEM : depending where user calls config from could make the program not work.
+# if user follows the install instructions it should work.
+echo -e "\nexport PATH="'$PATH'":$PWD/env/bin" >> ~/.bash_profile
+echo -e "\nexport QTWD=\"$PWD\"" >> ~/.bash_profile
+source ~/.bashrc
+source ~/.bash_profile
+touch ./doc/task.txt
+touch ./doc/completed.txt

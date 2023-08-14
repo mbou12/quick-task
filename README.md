@@ -2,6 +2,8 @@
 
 Quick task is a simple CLI tool to help manage tasks one at a time.
 
+Currently only supports unix environments.
+
 ---
 
 ### Installation
@@ -12,21 +14,8 @@ file.
 ```bash
 git clone git@github.com:mbou12/quick-task.git
 cd quick-task
+./env/config
 ./env/build
-```
-
----
-
-### Set Up
-
-Push the path of the binary into the `$PATH` enviromental variable. Set up
-the doc files that store your tasks.
-
-```bash
-echo -e "\nexport "'$PATH'":$PWD/env/bin" >> ~/.bash_profile
-source ~/.bash_profile
-touch ./doc/task.txt
-touch ./doc/completed.txt
 ```
 
 ---

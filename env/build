@@ -1,7 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-cd ../src
+if [[ -d "../src" && -d "../../qt" ]]; then
+    cd ../src
+elif [[ -d "src" && -d "../qt" ]]; then
+    cd src
+else 
+    echo "cannot build from here!"
+fi
+
+make clean
 make qt
+
 mv qt ../env/bin
 mv qt.cm* ../env/bin
 mv qt.o ../env/bin

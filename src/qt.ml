@@ -147,48 +147,38 @@ let remove_task (tl : task list) (b : bool ref) : task list =
     | false -> tl
 ;;
 
-let get_filenames : (string * string) option = 
-    let rel_task1 = "../doc/task.txt" in
-    let rel_comp1 = "../doc/completed.txt" in
-    let rel_task2 = "../../doc/task.txt" in
-    let rel_comp2 = "../../doc/completed.txt" in
-    if Sys.file_exists rel_task1 then
-        Some (rel_task1, rel_comp1) 
-    else if Sys.file_exists rel_task2 then
-        Some (rel_task2, rel_comp2) 
-    else
-        None
-;;
-
 let () =
-        match get_filenames with 
-            | None -> Stdlib.output_string stdout "Unable to find task files!" 
-            | Some (task_in, task_out) ->
-                let tl = read_tasks task_in in
+    let loc = Sys.getenv "QTWD" in
+    let task_in = loc ^ "/doc/task.txt" in
+    let task_out = loc ^ "/doc/completed.txt" in
+    if Sys.file_exists task_in && Sys.file_exists task_out then
+        let tl = read_tasks task_in in
 
-                let complete = ref false in
-                let display_cur = ref false in
-                let display_all = ref false in
-                let new_task = ref false in
-                let remove = ref false in
+        let complete = ref false in
+        let display_cur = ref false in
+        let display_all = ref false in
+        let new_task = ref false in
+        let remove = ref false in
 
-                let speclist = [
-                    ("-c", Arg.Set complete, "complete current task");
-                    ("-dc", Arg.Set display_cur, "display curernt task");
-                    ("-da", Arg.Set display_all, "display all tasks");
-                    ("-n", Arg.Set new_task, "create a new task");
-                    ("-r", Arg.Set remove, "remve a task");
-                ] in
+        let speclist = [
+            ("-c", Arg.Set complete, "complete current task");
+            ("-dc", Arg.Set display_cur, "display curernt task");
+            ("-da", Arg.Set display_all, "display all tasks");
+            ("-n", Arg.Set new_task, "create a new task");
+            ("-r", Arg.Set remove, "remve a task");
+        ] in
 
-                let anon_fun = fun s -> Printf.printf "Ivalid argument: %s\n" s in
-                let usage_msg = "quicktask [OPTION]" in
+        let anon_fun = fun s -> Printf.printf "Ivalid argument: %s\n" s in
+        let usage_msg = "quicktask [OPTION]" in
 
-                Arg.parse speclist anon_fun usage_msg;
+        Arg.parse speclist anon_fun usage_msg;
 
-                let tl = remove_task tl remove in
-                let tl = create_task tl new_task in
-                display_cur_task tl display_cur;
-                display_all_tasks tl display_all;
-                let tl = complete_task task_out tl complete in
-                write_tasks task_in tl
+        let tl = remove_task tl remove in
+        let tl = create_task tl new_task in
+        display_cur_task tl display_cur;
+        display_all_tasks tl display_all;
+        let tl = complete_task task_out tl complete in
+        write_tasks task_in tl
+    else
+        Stdlib.output_string stdout "Unable to find task files!\n" 
 ;;
