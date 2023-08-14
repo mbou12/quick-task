@@ -1,6 +1,4 @@
----
-author: Matthew Bourque
----
+# Quick Task
 
 Quick task is a simple CLI tool to help manage tasks one at a time.
 
@@ -12,9 +10,9 @@ In the env directory there is a build bash program that will compile the source
 file.
 
 ```bash
-$ git clone git@github.com:mbou12/quick-task.git
-$ cd quick-task
-$ ./env/build
+git clone git@github.com:mbou12/quick-task.git
+cd quick-task
+./env/build
 ```
 
 ---
