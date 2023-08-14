@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 
 if [[ -d "../src" && -d "../../qt" ]]; then
+    if [[ ! -d "bin" ]]; then
+        mkdir bin
+    fi
     cd ../src
 elif [[ -d "src" && -d "../qt" ]]; then
+    if [[ ! -d "./env/bin" ]]; then
+        mkdir env/bin
+    fi
     cd src
 else 
     echo "cannot build from here!"

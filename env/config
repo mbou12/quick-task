@@ -4,7 +4,13 @@
 # if user follows the install instructions it should work.
 echo -e "\nexport PATH="'$PATH'":$PWD/env/bin" >> ~/.bash_profile
 echo -e "\nexport QTWD=\"$PWD\"" >> ~/.bash_profile
+
 source ~/.bashrc
 source ~/.bash_profile
+
+if [ ! -d doc ]; then
+    mkdir doc
+fi
+
 touch ./doc/task.txt
 touch ./doc/completed.txt
