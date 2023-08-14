@@ -12,7 +12,7 @@ In the env directory there is a build bash program that will compile the source
 file.
 
 ```bash
-$ git clone 
+$ git clone git@github.com:mbou12/quick-task.git
 $ cd quick-task
 $ ./env/build
 ```
