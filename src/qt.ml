@@ -173,6 +173,7 @@ let () =
 
         Arg.parse speclist anon_fun usage_msg;
 
+        let tl = update_tasks tl in
         let tl = remove_task tl remove in
         let tl = create_task tl new_task in
         display_cur_task tl display_cur;
