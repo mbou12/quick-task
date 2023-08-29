@@ -28,8 +28,6 @@ let pp_task (t : task) (cur : bool) : string =
         "[" ^ string_of_int t.tid ^ "] " ^ t.name
 ;;
 
-exception EmptyStr
-
 let read_tasks (f : string) : task list =
     let ic = Stdlib.open_in f in
     let rec aux (ic : in_channel) : task list =
@@ -118,32 +116,56 @@ let create_task (tl : task list) (b : bool ref) : task list =
         | false -> tl
 ;;
 
-let filter_task (tl : task list) : task list =
-    let () = Stdlib.output_string stdout "Enter (name/tid) of task to remove?\n" in
-    let choice = Stdlib.read_line () in
-    let filter_choice (c : string) : task list = 
-        let p = (fun t -> string_of_int t.tid <> c && t.name <> c) in
-        List.filter p tl
-    in
-    let filtered = match choice with
-        | "name" ->
-            let () = Stdlib.output_string stdout "Enter name of task to remove!\n" in 
+let filter_task (tl : task list) (t : task) : task list =
+  let p = (fun x -> x.name <> t.name && x.tid <> t.tid) in
+  List.filter p tl
+;;
+
+let rec find_task (tl : task list) (t : task) : task option =
+  match tl with
+  | [] -> None
+  | x::xs -> if t.name = x.name || t.tid = x.tid then Some x else
+    find_task xs t
+;;
+
+let get_task (tl : task list) (choice : string) : task option =
+      begin match choice with
+        | "name" -> 
+            let () = Stdlib.output_string stdout "Enter name of task!\n" in
             let name = Stdlib.read_line () in
-            filter_choice name
+            find_task tl ({ name; tid = -1 })
         | "tid" -> 
-            let () = Stdlib.output_string stdout "Enter tid of task to remove!\n" in
+            let () = Stdlib.output_string stdout "Enter tid of task!\n" in
             let tid = Stdlib.read_line () in
-            filter_choice tid
-        | _ -> 
-            let () = Stdlib.output_string stdout "Invalid input!\n" in
-            tl
-    in
-    update_tasks filtered
+            find_task tl ({ name = ""; tid = int_of_string tid })
+        | _ -> None
+      end
 ;;
 
 let remove_task (tl : task list) (b : bool ref) : task list =
     match !b with
-    | true -> filter_task tl
+    | true -> 
+      let () = Stdlib.output_string stdout "Remove name or tid? (name/tid)\n" in
+      let choice = Stdlib.read_line () in
+      begin match (get_task tl choice) with
+        | None -> let () = Stdlib.output_string stdout "Invalid Input!\n" in
+          tl
+        | Some t -> update_tasks @@ filter_task tl t
+      end
+    | false -> tl
+;;
+
+let push_task (tl : task list) (b : bool ref) : task list =
+    match !b with
+    | true -> 
+      let () = Stdlib.output_string stdout "Push name or tid? (name/tid)\n" in
+      let choice = Stdlib.read_line () in
+      begin match (get_task tl choice) with
+        | None -> let () = Stdlib.output_string stdout "Invalid Input!\n" in
+          tl
+        | Some t -> let tl = filter_task tl t in
+          update_tasks (t::tl)
+      end
     | false -> tl
 ;;
 
@@ -159,13 +181,15 @@ let () =
         let display_all = ref false in
         let new_task = ref false in
         let remove = ref false in
+        let push = ref false in
 
         let speclist = [
             ("-c", Arg.Set complete, "complete current task");
             ("-dc", Arg.Set display_cur, "display curernt task");
             ("-da", Arg.Set display_all, "display all tasks");
             ("-n", Arg.Set new_task, "create a new task");
-            ("-r", Arg.Set remove, "remve a task");
+            ("-r", Arg.Set remove, "remove a task");
+            ("-p", Arg.Set push, "push a task");
         ] in
 
         let anon_fun = fun s -> Printf.printf "Ivalid argument: %s\n" s in
@@ -179,6 +203,7 @@ let () =
         display_cur_task tl display_cur;
         display_all_tasks tl display_all;
         let tl = complete_task task_out tl complete in
+        let tl = push_task tl push in
         write_tasks task_in tl
     else
         Stdlib.output_string stdout "Unable to find task files!\n" 
