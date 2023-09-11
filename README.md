@@ -1,4 +1,4 @@
-# Quick Task
+# Quick Task -- DO NOT USE THIS YET, NEED TO FIX BUILD AND CONFIG 
 
 Quick task is a simple CLI tool to help manage tasks one at a time.
 
